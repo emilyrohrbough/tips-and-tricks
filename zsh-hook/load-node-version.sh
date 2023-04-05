@@ -32,15 +32,20 @@ use_or_install_node_version() {
 
 autoload -U add-zsh-hook
 load-nvmrc() {
+  echo 'verifying nvm version....'
   local current_node_version="$(nvm version)"
   local nvmrc_path="$(find_node_version_file .nvmrc)"
   local node_version_file_path="$(find_node_version_file .node-version)"
 
+  echo "current version $current_node_version"
+ 
   if [ -n "$nvmrc_path" ]; then
+    echo 'use nvmrc path'
     use_or_install_node_version $nvmrc_path $current_node_version
   elif [ -n "$node_version_file_path" ]; then
+    echo 'use node_version path'
     use_or_install_node_version $node_version_file_path $current_node_version
-  elif [ "$node_version" != "$(nvm version default)" ]; then
+  elif [ "$current_node_version" != "$(nvm version default)" ]; then
     echo "reverting to nvm default version"
     nvm use default
   fi
